@@ -19,8 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/primitives/table";
-import { Tooltip, TooltipContent, TooltipProvider } from "@/primitives/tooltip";
-import { TooltipTrigger } from "@/primitives/tooltip";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -33,13 +31,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, Eye, Trash2 } from "lucide-react";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import type {
-  Vehicle,
-  VehicleAPI,
-} from "@/interfaces/vehicle-management/vehicle";
+import type { Vehicle } from "@/interfaces/vehicle-management/vehicle";
 
 export function VehicleTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -91,7 +86,7 @@ export function VehicleTable() {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="whitespace-nowrap text-end w-20 font-medium ">
+        <div className="mr-20 whitespace-nowrap text-center font-medium">
           <Badge>{row.getValue("capacityKg")} KG</Badge>
         </div>
       ),
