@@ -3,6 +3,7 @@ import "@/styles/root-layout.css";
 import { fonts } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/providers/theme";
+import QueryProvider from "@/hooks/query-provider";
 
 export const metadata: Metadata = {
   title: "FleetLink",
@@ -25,14 +26,16 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
