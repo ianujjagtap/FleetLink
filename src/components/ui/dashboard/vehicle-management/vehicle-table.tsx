@@ -170,7 +170,7 @@ export function VehicleTable() {
         </div>
       </div>
       <ScrollArea className="h-[calc(100vh-300px)] w-[80vw] rounded-md border md:w-auto">
-        <div className="w-auto rounded-md border">
+        <div className="w-auto">
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-background">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -216,7 +216,7 @@ export function VehicleTable() {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No new notifications found found.
+                    No vehicles found.
                   </TableCell>
                 </TableRow>
               )}
