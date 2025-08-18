@@ -1,8 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (
+    request.nextUrl.pathname === "/" ||
+    request.nextUrl.pathname === "/dashboard"
+  ) {
+    return NextResponse.redirect(
+      new URL("/dashboard/vehicle-management", request.url)
+    );
   }
 
   return NextResponse.next();
