@@ -7,11 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome lint --write --unsafe .",
-    "lint:fix": "biome lint --write --unsafe .",
+    "lint:fix": "biome lint --write .",
     "typecheck": "tsc --noEmit",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "build:prepare": "pnpm run typecheck && pnpm run lint:fix && pnpm run lint && pnpm run format && pnpm run check && pnpm run build"
+    "build:prepare": "pnpm run typecheck && pnpm run lint:fix --unsafe && pnpm run format && pnpm run check && pnpm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

@@ -1,6 +1,5 @@
 "use client";
 
-import { IVehicle } from "@/models";
 import { Button } from "@/primitives/button";
 import {
   Form,
@@ -34,7 +33,7 @@ interface Vehicle {
 }
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  capacity: z.number().min(1, "Capacity must be at least 1"),
+  capacity: z.string().min(1, "Capacity must be at least 1"),
   tyres: z.string().min(1, "Tyres must be at least 1"),
 });
 
@@ -46,7 +45,7 @@ export default function VehicleInputForm() {
     resolver: zodResolver(vehicleFormSchema),
     defaultValues: {
       name: "",
-      capacity: 1,
+      capacity: "",
       tyres: "",
     },
   });
@@ -73,6 +72,10 @@ export default function VehicleInputForm() {
         className:
           "!bg-background !text-foreground !border !border-secondary-foreground/20",
       });
+      queryClient.invalidateQueries({
+        queryKey: ["vehicles"],
+      });
+      form.reset();
     },
     onError: (error: Error) => {
       toast.error("Failed to add vehicle", {
@@ -88,7 +91,7 @@ export default function VehicleInputForm() {
   function onSubmit(values: z.infer<typeof vehicleFormSchema>) {
     const postData: Vehicle = {
       name: values.name,
-      capacityKg: values.capacity,
+      capacityKg: Number.parseInt(values.capacity),
       tyres: Number.parseInt(values.tyres, 10),
     };
     addVehicleMutation.mutate(postData);
@@ -167,9 +170,6 @@ export default function VehicleInputForm() {
           />
           {/* Form Actions */}
           <div className="flex items-center justify-end gap-4">
-            <Button variant="outline" disabled={isLoading}>
-              Cancel
-            </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
