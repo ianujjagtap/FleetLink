@@ -4,6 +4,7 @@ import { fonts } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/providers/theme";
 import QueryProvider from "@/hooks/query-provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "FleetLink",
@@ -33,7 +34,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <main>{children}</main>
+            <Toaster position="bottom-right" />
           </ThemeProvider>
         </QueryProvider>
       </body>

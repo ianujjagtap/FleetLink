@@ -1,6 +1,7 @@
 "use client";
 import Layout from "@/app/page";
 import VehicleInputForm from "@/components/ui/dashboard/vehicle-management/input-form";
+import { VehicleTable } from "@/components/ui/dashboard/vehicle-management/vehicle-table";
 import { Card, CardContent } from "@/primitives/card";
 import { Label } from "@/primitives/label";
 
@@ -18,7 +19,9 @@ const Page = () => {
                 </CardContent>
               </Card>
             </div>
-            <div className="w-full lg:w-2/3"></div>
+            <div className="w-full lg:w-2/3">
+              <VehicleTable />
+            </div>
           </div>
         </div>
       </Layout>

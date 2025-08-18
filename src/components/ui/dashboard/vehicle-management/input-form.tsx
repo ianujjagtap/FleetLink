@@ -1,5 +1,6 @@
 "use client";
 
+import { IVehicle } from "@/models";
 import { Button } from "@/primitives/button";
 import {
   Form,
@@ -19,12 +20,18 @@ import {
   SelectValue,
 } from "@/primitives/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
-// vehicle form zod schema
+interface Vehicle {
+  name: string;
+  capacityKg: number;
+  tyres: number;
+}
 const vehicleFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   capacity: z.number().min(1, "Capacity must be at least 1"),
@@ -44,8 +51,47 @@ export default function VehicleInputForm() {
     },
   });
 
+  const addVehicleMutation = useMutation({
+    mutationFn: async (data: Vehicle) => {
+      const url = "/api/vehicles";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsLoading(false);
+      toast.success("Vehicle added successfully !", {
+        className:
+          "!bg-background !text-foreground !border !border-secondary-foreground/20",
+      });
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to add vehicle", {
+        className:
+          "!bg-background !text-foreground !border !border-secondary-foreground/20",
+        descriptionClassName: "!text-foreground",
+        description: error.message,
+      });
+      setIsLoading(false);
+    },
+  });
+
   function onSubmit(values: z.infer<typeof vehicleFormSchema>) {
-    console.log("Form submitted with values:", values);
+    const postData: Vehicle = {
+      name: values.name,
+      capacityKg: values.capacity,
+      tyres: Number.parseInt(values.tyres, 10),
+    };
+    addVehicleMutation.mutate(postData);
     setIsLoading(true);
   }
 
@@ -125,7 +171,14 @@ export default function VehicleInputForm() {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              Add Vehicle
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding Vehicle...
+                </>
+              ) : (
+                "Add Vehicle"
+              )}
             </Button>
           </div>
         </form>
