@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     }
 
     // creating booking
-    const booking: IBooking = await Booking.create({
+    await Booking.create({
       vehicleId,
       fromPincode,
       toPincode,
@@ -66,7 +66,10 @@ export async function POST(req: Request) {
       endTime,
       customerId,
     });
-    return NextResponse.json({ booking }, { status: 201 });
+    return NextResponse.json(
+      { success: true, message: "Booking created successfully " },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       { success: false, message: `Failed to create booking ${error}` },

@@ -12,9 +12,8 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching vehicles:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch vehicles" },
+      { success: false, error: `Failed to fetch vehicles ${error}` },
       { status: 500 }
     );
   }
@@ -27,7 +26,7 @@ export async function POST(req: Request) {
 
     if (!name || typeof capacityKg !== "number" || typeof tyres !== "number") {
       return NextResponse.json(
-        { error: "Invalid input types" },
+        { success: false, message: "Invalid input types" },
         {
           status: 400,
         }
@@ -63,11 +62,10 @@ export async function POST(req: Request) {
       );
     }
   } catch (error) {
-    console.error("Server error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: "Internal server error",
+        error: `Internal server error ${error}`,
       },
       { status: 500 }
     );

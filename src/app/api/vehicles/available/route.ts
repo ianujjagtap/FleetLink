@@ -12,8 +12,6 @@ export async function GET(req: Request) {
     const toPincode = searchParams.get("toPincode");
     const startTime = searchParams.get("startTime");
 
-    console.log("Hey", capacity, fromPincode, toPincode, startTime);
-
     const startDate = new Date(startTime as string);
     const capacityNum = Number.parseInt(capacity as string, 10);
 
@@ -84,11 +82,10 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("error fetching available vehicles:", error);
     return NextResponse.json(
       {
         success: false,
-        message: "failed to fetch available vehicles",
+        message: `failed to fetch available vehicles ${error}`,
       },
       { status: 500 }
     );
