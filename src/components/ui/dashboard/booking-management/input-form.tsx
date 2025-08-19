@@ -153,10 +153,10 @@ export default function VehicleInputForm() {
   return (
     <>
       <div className="my-4 font-medium text-lg">Book new ride</div>
+      {/* search form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {/* Title Field */}
             <FormField
               control={form.control}
               name="capacity"
@@ -268,7 +268,8 @@ export default function VehicleInputForm() {
               )}
             />
           </div>
-          {/* Form Actions */}
+
+          {/* form action */}
           <div className="flex items-center justify-end gap-4">
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
@@ -283,6 +284,8 @@ export default function VehicleInputForm() {
           </div>
         </form>
       </Form>
+
+      {/* available vehicles */}
       {availableVehiclesData?.data && (
         <Card className="mt-8 h-auto w-full">
           <CardHeader>Available Vehicles</CardHeader>

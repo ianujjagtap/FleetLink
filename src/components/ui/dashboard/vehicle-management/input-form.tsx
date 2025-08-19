@@ -101,9 +101,9 @@ export default function VehicleInputForm() {
   return (
     <>
       <div className="my-4 font-medium text-lg">Add new vehicle</div>
+      {/* add vehicle form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Title Field */}
           <FormField
             control={form.control}
             name="name"
@@ -168,7 +168,7 @@ export default function VehicleInputForm() {
               </FormItem>
             )}
           />
-          {/* Form Actions */}
+          {/* form actions */}
           <div className="flex items-center justify-end gap-4">
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (

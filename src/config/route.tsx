@@ -1,5 +1,6 @@
 import { BookOpenText, Car } from "lucide-react";
 
+// application routes
 export const RouteConfig = [
   {
     title: "Vehicle Management",

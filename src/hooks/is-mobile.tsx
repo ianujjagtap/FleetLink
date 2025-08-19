@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
+// resizing hook for sidebar component
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
 
