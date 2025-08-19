@@ -14,20 +14,20 @@ import {
 import { Input } from "@/primitives/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/primitives/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
 import { toast } from "sonner";
-
-interface Booking {
-  capacity: number;
-  fromPincode: number;
-  toPincode: number;
-  startTime: string;
-}
+import { Card, CardContent, CardHeader } from "@/primitives/card";
+import { Badge } from "@/primitives/badge";
+import type {
+  Booking,
+  BookingAPIResponse,
+  BookingVehicle,
+} from "@/interfaces/booking-management/booking";
 
 const bookingFormSchema = z.object({
   capacity: z.string().min(1, "Capacity must be at least 1"),
@@ -43,9 +43,9 @@ const bookingFormSchema = z.object({
 
 export default function VehicleInputForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [availableVehiclsData, setAvailableVehiclesData] = useState<Booking[]>(
-    []
-  );
+  const [isBookingLoading, setIsBookingLoading] = useState(false);
+  const [availableVehiclesData, setAvailableVehiclesData] =
+    useState<BookingAPIResponse>();
 
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
@@ -78,24 +78,67 @@ export default function VehicleInputForm() {
     },
     onSuccess: (data) => {
       setAvailableVehiclesData(data);
-      console.log("Available vehicles data:", data);
       setIsLoading(false);
-      toast.success("Available vehicles fetched successfully!", {
+      toast.success("Vehicles available !", {
         className:
           "!bg-background !text-foreground !border !border-secondary-foreground/20",
       });
     },
     onError: (error: Error) => {
-      setAvailableVehiclesData([]);
-      toast.error("Failed to fetch vehicles", {
+      setAvailableVehiclesData(undefined);
+      console.error("Error:", error);
+      setIsLoading(false);
+    },
+  });
+
+  const BookingMutation = useMutation({
+    mutationFn: async (data: BookingVehicle) => {
+      const url = "/api/booking";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsBookingLoading(false);
+      toast.success("Booking created succesfully !", {
+        className:
+          "!bg-background !text-foreground !border !border-secondary-foreground/20",
+      });
+    },
+    onError: (error: Error) => {
+      setIsBookingLoading(false);
+      toast.error("Failed to create booking", {
         className:
           "!bg-background !text-foreground !border !border-secondary-foreground/20",
         descriptionClassName: "!text-foreground",
         description: error.message,
       });
-      setIsLoading(false);
     },
   });
+
+  // biome-ignore lint/suspicious/noExplicitAny: <>
+  const handleBooking = (vehicle: any) => {
+    setIsBookingLoading(true);
+    console.log(vehicle);
+
+    const postData = {
+      vehicleId: vehicle._id,
+      fromPincode: Number.parseInt(form.getValues("fromPincode")),
+      toPincode: Number.parseInt(form.getValues("toPincode")),
+      startTime: Number.parseInt(form.getValues("startTime")),
+      customerId: Math.floor(Math.random() * 1000),
+    };
+    BookingMutation.mutate(postData);
+  };
 
   function onSubmit(values: z.infer<typeof bookingFormSchema>) {
     const postData: Booking = {
@@ -104,17 +147,15 @@ export default function VehicleInputForm() {
       toPincode: Number(values.toPincode),
       startTime: values.startTime,
     };
-    console.log("Submitting booking data:", postData);
     searchVehicleMutation.mutate(postData);
     setIsLoading(true);
   }
-
   return (
     <>
       <div className="my-4 font-medium text-lg">Book new ride</div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {/* Title Field */}
             <FormField
               control={form.control}
@@ -242,6 +283,63 @@ export default function VehicleInputForm() {
           </div>
         </form>
       </Form>
+      {availableVehiclesData?.data && (
+        <Card className="mt-8 h-auto w-full">
+          <CardHeader>Available Vehicles</CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <p className="text-center">Loading available vehicles...</p>
+            ) : availableVehiclesData.data.length > 0 ? (
+              <div className="space-y-4">
+                {/** biome-ignore lint/suspicious/noExplicitAny: <> */}
+                {availableVehiclesData.data.map((vehicle: any, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded-md border bg-background p-4 "
+                  >
+                    <div className="flex gap-8 overflow-x-auto">
+                      <span className="flex gap-2">
+                        <Badge>Name</Badge>:
+                        <Badge variant={"secondary"} className="font-medium">
+                          {vehicle.name}
+                        </Badge>
+                      </span>
+                      <span className="flex gap-2">
+                        <Badge>Capacity</Badge>:
+                        <Badge variant={"secondary"} className="font-medium">
+                          {vehicle.capacityKg} kg
+                        </Badge>
+                      </span>
+                      <span className="flex gap-2">
+                        <Badge>Tyres</Badge>:
+                        <Badge variant={"secondary"} className="font-medium">
+                          {vehicle.tyres}
+                        </Badge>
+                      </span>
+                    </div>
+                    <Button
+                      variant={"success"}
+                      onClick={() => handleBooking(vehicle)}
+                      className="ml-4 text-secondary-foreground"
+                    >
+                      {isBookingLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Confirming booking...
+                        </>
+                      ) : (
+                        "Book Now"
+                      )}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center">No vehicles available</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }
