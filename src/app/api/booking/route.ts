@@ -1,9 +1,25 @@
 import connectDB from "@/config/db";
-import { Vehicle, Booking, type IBooking } from "@/models";
+import { Vehicle, Booking } from "@/models";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 connectDB();
+
+export async function GET() {
+  try {
+    const bookings = await Booking.find();
+
+    return NextResponse.json(
+      { success: true, data: bookings },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: `Failed to fetch bookings: ${error}` },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: Request) {
   try {
