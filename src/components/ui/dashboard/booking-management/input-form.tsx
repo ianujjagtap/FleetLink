@@ -41,7 +41,7 @@ const bookingFormSchema = z.object({
     }),
 });
 
-export default function VehicleInputForm() {
+export default function BookingInputForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isBookingLoading, setIsBookingLoading] = useState(false);
   const [availableVehiclesData, setAvailableVehiclesData] =
@@ -109,6 +109,8 @@ export default function VehicleInputForm() {
     },
     onSuccess: () => {
       setIsBookingLoading(false);
+      setAvailableVehiclesData(undefined);
+      form.reset();
       toast.success("Booking created succesfully !", {
         className:
           "!bg-background !text-foreground !border !border-secondary-foreground/20",
@@ -128,7 +130,6 @@ export default function VehicleInputForm() {
   // biome-ignore lint/suspicious/noExplicitAny: <>
   const handleBooking = (vehicle: any) => {
     setIsBookingLoading(true);
-    console.log(vehicle);
 
     const postData = {
       vehicleId: vehicle._id,
