@@ -60,10 +60,10 @@ interface Booking {
   _id: string;
 }
 
-interface BookingAPIResponse {
-  success: boolean;
-  data: Booking[];
-}
+// interface BookingAPIResponse {
+//   success: boolean;
+//   data: Booking[];
+// }
 export function BookingTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

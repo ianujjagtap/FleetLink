@@ -19,7 +19,7 @@ const Page = () => {
                 </CardContent>
               </Card>
             </div>
-            <div className="w-full mt-4">
+            <div className="mt-4 w-full">
               <BookingTable />
             </div>
           </div>
