@@ -76,6 +76,7 @@ pnpm run dev
 ### Notes :
 - For the ride duration calculation placdeholder formula is used 
 - API routes ( Backend API ) can be found in /app/api dir
+- Deployment can be found on https://fleet-link-sand.vercel.app/dashboard/vehicle-management
 
 ### Thank You Knovator for this opportunity of building FleetLink , Looking forward for feedback ! 
 
