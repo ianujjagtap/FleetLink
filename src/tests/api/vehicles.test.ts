@@ -26,7 +26,7 @@ describe("Vehicles API", () => {
     it("should handle invalid input", async () => {
       const req = new Request("http://localhost/api/vehicles", {
         method: "POST",
-        body: JSON.stringify({ name: "" }), // Invalid input
+        body: JSON.stringify({ name: "" }), // invalid input
       });
       const response = await vehiclesRoute.POST(req);
 
@@ -101,7 +101,7 @@ describe("Vehicles API", () => {
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data.success).toBe(true);
-      expect(data.vehicles).toHaveLength(0); // Vehicle excluded due to overlap
+      expect(data.vehicles).toHaveLength(0); // vehicle excluded due to overlap
     });
 
     it("should handle errors", async () => {

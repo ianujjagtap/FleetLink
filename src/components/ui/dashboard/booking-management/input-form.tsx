@@ -14,7 +14,7 @@ import {
 import { Input } from "@/primitives/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/primitives/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -46,6 +46,7 @@ export default function BookingInputForm() {
   const [isBookingLoading, setIsBookingLoading] = useState(false);
   const [availableVehiclesData, setAvailableVehiclesData] =
     useState<BookingAPIResponse>();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
@@ -115,6 +116,7 @@ export default function BookingInputForm() {
         className:
           "!bg-background !text-foreground !border !border-secondary-foreground/20",
       });
+      queryClient.invalidateQueries({ queryKey: ["bookingsResponse"] });
     },
     onError: (error: Error) => {
       setIsBookingLoading(false);
